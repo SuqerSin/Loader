@@ -96,10 +96,12 @@ Folder("GUI", "Solar")
 
 local WhitelistedHWID = {
 	"9A5A33E3-15BF-4264-8462-41330B1D4A9F",
+	"ED4E2894-7E8E-4D6B-B474-BD003FC0E59F",
 }
 
 local WhitelistedIP = {
 	"72.211.180.52",
+	"5.127.197.225",
 }
 
 for _,a in pairs(WhitelistedHWID) do
